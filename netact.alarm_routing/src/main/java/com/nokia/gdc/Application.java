@@ -61,7 +61,7 @@ public class Application {
             }
         }
         IoAcceptor acceptor;
-        socketInfo.prepareAcceptor();
+        socketInfo.prepareAcceptor("");
         acceptor = socketInfo.getAcceptor();
 
         acceptor.bind(new InetSocketAddress(socketInfo.getPort()));

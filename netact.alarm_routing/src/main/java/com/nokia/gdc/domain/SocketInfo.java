@@ -8,6 +8,7 @@ package com.nokia.gdc.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nokia.gdc.socket.NetactAlarmForwardingHandler;
+import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import lombok.Data;
@@ -50,11 +51,17 @@ public class SocketInfo {
     //   public void setNewAcceptor(IoAcceptor acceptor) {
     //       this.acceptor = acceptor;
     //   }
-    public void prepareAcceptor() {
+    public void prepareAcceptor(String ClassHandlerName) {
+        
+     //   ClassLoader classLoader = this.getClass().getClassLoader();
+     //   Class loadedMyClass = classLoader.loadClass(ClassHandlerName);
+     //   Constructor constructor = loadedMyClass.getConstructor();
+        
         acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast("logger", new LoggingFilter(socketName));
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
 
+     //   acceptor.setHandler(classLoader.loadClass(ClassHandlerName).getConstructors());
         acceptor.setHandler(new NetactAlarmForwardingHandler());
         acceptor.getSessionConfig().setReadBufferSize(2048);
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);

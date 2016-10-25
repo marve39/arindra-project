@@ -5,14 +5,18 @@
  */
 package com.nokia.gdc.controller;
 
+import biz.futureware.mantis.rpc.soap.client.IssueData;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import biz.futureware.mantis.rpc.soap.client.MantisConnectBindingStub;
 import biz.futureware.mantis.rpc.soap.client.ProjectData;
+import java.math.BigInteger;
 import org.apache.axis.AxisProperties;
 import org.apache.axis.client.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  *
@@ -63,6 +67,37 @@ public class MantisConnectController {
             setProxyOnAxis();
             MantisConnectBindingStub mc = new MantisConnectBindingStub(new java.net.URL(mantisEndpoint), service);
             return mc.mc_projects_get_user_accessible(username, password);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+     @RequestMapping("/mantisconnect/mc_issue_get/{username}/{password}/{projectID}")
+    public IssueData getMCProjectsGetUserAccessible(@PathVariable("username") String username, @PathVariable("password") String password, @PathVariable("projectID") BigInteger projectID){
+        Service service = new Service();
+        try {
+            setProxyOnAxis();
+            MantisConnectBindingStub mc = new MantisConnectBindingStub(new java.net.URL(mantisEndpoint), service);
+            return mc.mc_issue_get(username, password, projectID);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/mantisconnect/mc_issue_add/{username}/{password}")
+    public IssueData getMCProjectsGetUserAccessible(@RequestBody IssueData issueData, @PathVariable("username") String username, @PathVariable("password") String password){
+        Service service = new Service();
+        
+        System.out.println("Project" + issueData.getProject().getId() + " " + issueData.getProject().getName());
+        System.out.println("Description" + issueData.getDescription());
+        
+        try {
+            setProxyOnAxis();
+            MantisConnectBindingStub mc = new MantisConnectBindingStub(new java.net.URL(mantisEndpoint), service);
+            BigInteger issueID = mc.mc_issue_add(username, password, issueData);
+            return mc.mc_issue_get(username, password, issueID);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
