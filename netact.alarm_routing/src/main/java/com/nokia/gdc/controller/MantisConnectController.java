@@ -90,12 +90,13 @@ public class MantisConnectController {
     public IssueData getMCProjectsGetUserAccessible(@RequestBody IssueData issueData, @PathVariable("username") String username, @PathVariable("password") String password){
         Service service = new Service();
         
-        System.out.println("Project" + issueData.getProject().getId() + " " + issueData.getProject().getName());
-        System.out.println("Description" + issueData.getDescription());
+     //   System.out.println("Project" + issueData.getProject().getId() + " " + issueData.getProject().getName());
+     //   System.out.println("Description" + issueData.getDescription());
         
         try {
             setProxyOnAxis();
             MantisConnectBindingStub mc = new MantisConnectBindingStub(new java.net.URL(mantisEndpoint), service);
+      //      issueData = mc.mc_issue_get(username, password, BigInteger.valueOf(Long.parseLong("60")));
             BigInteger issueID = mc.mc_issue_add(username, password, issueData);
             return mc.mc_issue_get(username, password, issueID);
         } catch (Exception ex) {

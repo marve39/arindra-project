@@ -14,6 +14,7 @@ import java.util.Calendar;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.mina.core.service.IoAcceptor;
+import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
@@ -36,6 +37,7 @@ public class SocketInfo {
     private Integer incomingCounter = 0;
     private Integer processingCounter = 0;
     private String message;
+    private final String classHandlerName;// = "com.nokia.gdc.socket.NetactAlarmForwardingHandler";
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy HH:mm")
     private Calendar createdTime;
@@ -45,23 +47,23 @@ public class SocketInfo {
     private IoAcceptor acceptor;
 
     protected SocketInfo() {
-        this(null, null);
+        this(null, null, null);
     }
 
     //   public void setNewAcceptor(IoAcceptor acceptor) {
     //       this.acceptor = acceptor;
     //   }
-    public void prepareAcceptor(String ClassHandlerName) {
+    public void prepareAcceptor() throws Exception {
         
-     //   ClassLoader classLoader = this.getClass().getClassLoader();
-     //   Class loadedMyClass = classLoader.loadClass(ClassHandlerName);
-     //   Constructor constructor = loadedMyClass.getConstructor();
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        Class loadedMyClass = classLoader.loadClass("com.nokia.gdc.socket."+ classHandlerName);
+        Constructor constructor = loadedMyClass.getConstructor();
         
         acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast("logger", new LoggingFilter(socketName));
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
 
-     //   acceptor.setHandler(classLoader.loadClass(ClassHandlerName).getConstructors());
+        acceptor.setHandler((IoHandlerAdapter) constructor.newInstance());
         acceptor.setHandler(new NetactAlarmForwardingHandler());
         acceptor.getSessionConfig().setReadBufferSize(2048);
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);

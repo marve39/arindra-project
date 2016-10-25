@@ -50,7 +50,7 @@ public class Application {
         }
     }
 
-    public static SocketInfo startNetActAlarmListener(SocketInfo socketInfo) throws SocketAlreadyRunningException, IOException {
+    public static SocketInfo startNetActAlarmListener(SocketInfo socketInfo) throws Exception {
         boolean isCreated = false;
 
         if (socketListener.containsKey(socketInfo.getPort())) {
@@ -61,7 +61,7 @@ public class Application {
             }
         }
         IoAcceptor acceptor;
-        socketInfo.prepareAcceptor("");
+        socketInfo.prepareAcceptor();
         acceptor = socketInfo.getAcceptor();
 
         acceptor.bind(new InetSocketAddress(socketInfo.getPort()));

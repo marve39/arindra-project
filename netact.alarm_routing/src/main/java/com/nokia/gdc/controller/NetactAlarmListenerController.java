@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @RestController
 public class NetactAlarmListenerController {
-     @RequestMapping("/socket/start/{port}")
-    public SocketInfo create(@PathVariable("port") Integer port){
-        SocketInfo socketInfo = new SocketInfo("[" + port + "]",port);
+    
+    //com.nokia.gdc.socket.NetactAlarmForwardingHandler
+     @RequestMapping("/socket/start/{port}/{handlerClass}")
+    public SocketInfo create(@PathVariable("port") Integer port, @PathVariable("handlerClass") String handlerClass){
+        SocketInfo socketInfo = new SocketInfo("[" + port + "]",port,handlerClass);
         try{
             socketInfo = Application.startNetActAlarmListener(socketInfo);
             socketInfo.setMessage("[SUCCESS] - Socket Successfully Created");
@@ -35,6 +37,9 @@ public class NetactAlarmListenerController {
             }
         }catch(IOException ioEx){
             socketInfo.setMessage("[ERROR] - " + ioEx.getMessage());
+        }catch(Exception ex){
+            socketInfo.setMessage("[ERROR] - " + ex.getMessage());
+            ex.printStackTrace();
         }
         socketInfo.refreshInfo();
         return socketInfo;
@@ -42,7 +47,7 @@ public class NetactAlarmListenerController {
     
     @RequestMapping("/socket/stop/{port}")
     public SocketInfo stop(@PathVariable("port") Integer port){
-        SocketInfo socketInfo = new SocketInfo("[" + port + "]",port);
+        SocketInfo socketInfo = new SocketInfo("[" + port + "]",port,"");
         try{
             socketInfo = Application.stopNetactAlarmListener(socketInfo);
             socketInfo.setMessage("[SUCCESS] - Socket Successfully Stopped");
@@ -55,7 +60,7 @@ public class NetactAlarmListenerController {
     
      @RequestMapping("/socket/status/{port}")
     public SocketInfo status(@PathVariable("port") Integer port){
-        SocketInfo socketInfo = new SocketInfo("[" + port + "]",port);
+        SocketInfo socketInfo = new SocketInfo("[" + port + "]",port,"");
         try{
             socketInfo = Application.refreshNetactAlarmListenerInfo(socketInfo);
             socketInfo.setMessage("[SUCCESS] - Socket Return Status");
