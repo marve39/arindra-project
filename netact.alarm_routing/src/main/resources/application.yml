@@ -1,0 +1,28 @@
+application:
+    name: Netatct Alarm Routing
+server:
+    port: 8888
+    ssl:
+        key-store: keystore.p12
+        key-store-password: password
+        keyStoreType: PKCS12
+        keyAlias: tomcat
+biz:
+    futureware:
+        mantis:
+            rpc:
+                soap:
+                    client:
+                           endpoint: http://gdcindonesia.com:8138/api/soap/wttconnect.php
+
+
+#org:
+#    apache:
+#        axis:
+#            AxisProperties:
+#                    http:
+#                        proxy:
+#                            host: "103.49.105.115"
+#                            port: 9999
+
+# keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
