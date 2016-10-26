@@ -13,7 +13,7 @@ biz:
             rpc:
                 soap:
                     client:
-                           endpoint: http://gdcindonesia.com:8138/api/soap/wttconnect.php
+                           endpoint: http://gdcindonesia.com:8138/api/soap/mantisconnect.php
 
 
 org:
