@@ -29,14 +29,14 @@ public class NetactAlarmForwardingHandler extends IoHandlerAdapter {
         Application.addMessageCounter(inetSocketAddress.getPort(), 1, 0);
 
         String str = message.toString();
-        if (str.trim().equalsIgnoreCase("quit")) {
+        /* if (str.trim().equalsIgnoreCase("quit")) {
             session.close();
             return;
-        }
-
-        Date date = new Date();
-        session.write(date.toString());
-        System.out.println("Message written...");
+        }*/
+        //Date date = new Date();
+        //session.write(date.toString());
+        System.out.println("===== Message Recieved [ "+ session.getRemoteAddress().toString() +" ]======");
+        System.out.println(str);
 
         Application.addMessageCounter(inetSocketAddress.getPort(), 0, 1);
     }

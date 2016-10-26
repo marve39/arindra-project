@@ -17,6 +17,7 @@ import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
+import org.apache.mina.filter.codec.textline.LineDelimiter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
@@ -59,9 +60,13 @@ public class SocketInfo {
         Class loadedMyClass = classLoader.loadClass("com.nokia.gdc.socket."+ classHandlerName);
         Constructor constructor = loadedMyClass.getConstructor();
         
+        LineDelimiter line = new LineDelimiter("#E#");
+        TextLineCodecFactory txtFac = new TextLineCodecFactory(Charset.forName("UTF-8"),line,line);
+        txtFac.setDecoderMaxLineLength(10240);
+        
         acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast("logger", new LoggingFilter(socketName));
-        acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
+        acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(txtFac));
 
         acceptor.setHandler((IoHandlerAdapter) constructor.newInstance());
         acceptor.setHandler(new NetactAlarmForwardingHandler());
