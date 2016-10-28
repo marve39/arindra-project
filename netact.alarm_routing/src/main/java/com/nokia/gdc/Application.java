@@ -3,9 +3,9 @@ package com.nokia.gdc;
 import com.nokia.gdc.domain.SocketInfo;
 import com.nokia.gdc.exception.SocketAlreadyRunningException;
 import com.nokia.gdc.exception.SocketNotFoundException;
-import java.io.IOException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import java.util.HashMap;
 import org.apache.mina.core.service.IoAcceptor;
 
 @SpringBootApplication
+@EnableDiscoveryClient //http://cloud.spring.io/spring-cloud-zookeeper/spring-cloud-zookeeper.html
 public class Application {
 
     private static final HashMap<Integer, SocketInfo> socketListener = new HashMap<Integer, SocketInfo>();
